@@ -279,7 +279,7 @@ public:
 			err = "Threw exception of type overflow.";
 			throw std::runtime_error(err);
 		}
-		else if (e1->Eval() < 0 & e2->Eval() < 0 & e1->Eval() < std::numeric_limits<int>::min() + e2->Eval()) {	// if result is out of the range supported, throw exception.
+		else if (e1->Eval() < 0 & e2->Eval() > 0 & e1->Eval() < std::numeric_limits<int>::min() + e2->Eval()) {	// if result is out of the range supported, throw exception.
 			err = "Threw exception of type overflow.";
 			throw std::runtime_error(err);
 		}
@@ -307,7 +307,7 @@ public:
 			err = "Threw exception of type overflow.";
 			throw std::runtime_error(err);
 		}
-		else if ((e1->Eval() < 0 & e2->Eval()) > 0 & e1->Eval() < std::numeric_limits<int>::min() / e2->Eval()) {	// if result is out of the range supported, throw exception.
+		else if ((e1->Eval() < 0 & e2->Eval() > 0) & e1->Eval() < std::numeric_limits<int>::min() / e2->Eval()) {	// if result is out of the range supported, throw exception.
 			err = "Threw exception of type overflow.";
 			throw std::runtime_error(err);
 		}
@@ -320,12 +320,17 @@ public:
 				err = "Threw exception of type overflow.";
 				throw std::runtime_error(err);
 			}
+			else
+				return (-e2->Eval());
 		}
 		else if (e2->Eval() == -1) {
 			if (e1->Eval() == std::numeric_limits<int>::min()) {
 				err = "Threw exception of type overflow.";
 				throw std::runtime_error(err);
 			}
+			else
+				return (-e1->Eval());
+			
 		}
 		else
 			return (e1->Eval() * e2->Eval());

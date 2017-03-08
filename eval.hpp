@@ -58,7 +58,7 @@ public:
 	int Eval() { return val; }
 };
 
-struct And_expr : Expr { // returns e1 & e2
+struct And_expr : Expr { // returns e2 if e1 is true, false otherwise
 private:
 	Expr* e1;
 	Expr* e2;
@@ -66,28 +66,58 @@ private:
 public:
 	And_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Bool_ | e2->check() != &Bool_)	// if types are not valid, throw an exception
+		if (e1->check() != &Bool_ & e2->check() != &Bool_)		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
-
-	int Eval() { return e1->Eval() & e2->Eval(); }
+	int Eval() { return e1->Eval() ? e2->Eval() : false; }	// if e1 is true, return e2, else return false;
 };
 
-struct Or_expr : Expr { // returns e1 | e2
+struct Or_expr : Expr { // returns true if e1 is true, e2 otherwise
 private:
 	Expr* e1;
 	Expr* e2;
 
 public:
-	Or_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {		// if types are not valid, throw an exception
+	Or_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Bool_ | e2->check() != &Bool_)
+		if (e1->check() != &Bool_ & e2->check() != &Bool_) 	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
-
-	int Eval() { return e1->Eval() | e2->Eval(); }
-
+	int Eval() {
+		return e1->Eval() ? true : e2->Eval(); 		// if e1 is true, return true, else return e2
+	}
 };
+
+// struct And_expr : Expr { // returns e1 & e2 // OLD -- SINGLE &
+// private:
+// 	Expr* e1;
+// 	Expr* e2;
+
+// public:
+// 	And_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
+// 		ExprType = &Bool_;
+// 		if (e1->check() != &Bool_ | e2->check() != &Bool_)	// if types are not valid, throw an exception
+// 			throw std::runtime_error(err);
+// 	}
+
+// 	int Eval() { return e1->Eval() & e2->Eval(); }
+// };
+
+// struct Or_expr : Expr { // returns e1 | e2 // OLD -- SINGLE |
+// private:
+// 	Expr* e1;
+// 	Expr* e2;
+
+// public:
+// 	Or_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {		// if types are not valid, throw an exception
+// 		ExprType = &Bool_;
+// 		if (e1->check() != &Bool_ | e2->check() != &Bool_)
+// 			throw std::runtime_error(err);
+// 	}
+
+// 	int Eval() { return e1->Eval() | e2->Eval(); }
+
+// };
 
 struct Xor_expr : Expr { // returns e1 ^ e2
 private:
@@ -411,35 +441,6 @@ public:
 	}
 };
 
-struct AndThen_expr : Expr { // returns e2 if e1 is true, false otherwise
-private:
-	Expr* e1;
-	Expr* e2;
-
-public:
-	AndThen_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ & e2->check() != &Bool_)		// if types are not valid, throw an exception
-			throw std::runtime_error(err);
-	}
-	int Eval() { return e1->Eval() ? e2->Eval() : false; }	// if e1 is true, return e2, else return false;
-};
-
-struct OrElse_expr : Expr { // returns true if e1 is true, e2 otherwise
-private:
-	Expr* e1;
-	Expr* e2;
-
-public:
-	OrElse_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ & e2->check() != &Bool_) 	// if types are not valid, throw an exception
-			throw std::runtime_error(err);
-	}
-	int Eval() {
-		return e1->Eval() ? true : e2->Eval(); 		// if e1 is true, return true, else return e2
-	}
-};
 
 #endif
 

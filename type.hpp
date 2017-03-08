@@ -1,3 +1,20 @@
+#ifndef TYPE_HPP
+#define TYPE_HPP
+
+// virtual struct ~Type {}
+// struct Bool_Type: Type {}
+// struct Int_Type: Type {}
+
+struct Type {
+//	struct Visitor;
+	virtual ~Type() = default;
+//	virtual void accept(Visitor&) {}
+};
+
+struct Bool_Type : Type {};
+struct Int_Type : Type {};
+
+#endif
 
 // bool needs_parens(Expr* e)
 // {
@@ -55,21 +72,3 @@
 // virtual ~type destructor
 //struct BOOL TYPE
 //struct INT TYPE
-
-#ifndef TYPE_HPP
-#define TYPE_HPP
-
-// virtual struct ~Type {}
-// struct Bool_Type: Type {}
-// struct Int_Type: Type {}
-
-struct Type {
-//	struct Visitor;
-	virtual ~Type() = default;
-//	virtual void accept(Visitor&) {}
-};
-
-struct Bool_Type : Type {};
-struct Int_Type : Type {};
-
-#endif

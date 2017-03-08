@@ -1,0 +1,43 @@
+Int_Token : 5
+
+Int_Token : 3214
+
+Int_Token : 123
+
+Plus_token
+
+Minus_token
+
+Star_token
+
+Slash_token
+
+AmpAmp_token
+
+PipePipe_token
+
+Bang_token
+
+Eq_token
+
+EqEq_token
+
+BangEq_token
+
+Lt_token
+
+Gt_token
+
+LtEq_token
+
+GtEq_token
+
+Query_token
+
+Colon_token
+
+Lparen_token
+
+Rparen_token
+
+

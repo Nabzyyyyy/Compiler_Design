@@ -133,7 +133,29 @@ Token * Lexer::next() {
 						buffer();
 					return new Int_token(std::stoi(buf));
 				}
-				default: /std::cout << "Received unsupported character" << std::endl; throw std::runtime_error(""); break;
+				case 't': {
+					buffer();
+					if (lookahead() == 'r')
+						buffer();
+					if (lookahead() == 'u')
+						buffer();
+					if (lookahead() == 'e')
+						buffer();
+					return new Bool_token(true);
+				}
+				case 'f': {
+					buffer(); 
+					if (lookahead() == 'a')
+						buffer();
+					if (lookahead() == 'l')
+						buffer();
+					if (lookahead() == 's')
+						buffer();
+					if (lookahead() == 'e')
+						buffer();
+					return new Bool_token(false);
+				}
+				default: std::cout << "Received unsupported character" << std::endl; throw std::runtime_error(""); break;
 			} // end switch
 		} //end while // return nullpt	r;
 }

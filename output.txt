@@ -40,4 +40,8 @@ Lparen_token
 
 Rparen_token
 
+Bool_token : true
+
+Bool_token : false
+
 

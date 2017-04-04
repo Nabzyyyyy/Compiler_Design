@@ -62,6 +62,7 @@ Token * Lexer::next() {
 				case ':': consume(); return new PuncOp_token(Colon_tok);
 				case '(': consume(); return new PuncOp_token(Lparen_tok);
 				case ')': consume(); return new PuncOp_token(Rparen_tok);
+				case ';': consume(); return new PuncOp_token(Semi_tok);
 				case '&': { 
 					consume();
 					if (lookahead() == '&') {

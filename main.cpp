@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <sstream>
+#include "parser.hpp"
+#include <deque>
 
 int main() {	
 
@@ -15,22 +17,28 @@ int main() {
 	// t->val = true;
 
 
-
-
-
-
 	std::string strIn; // 
+	std::deque<Token*> tokens;
 	//std::stringstream strStream;
 
 	while(std::getline(std::cin, strIn)) { 	// while there's standard input
 		//strStream << strIn; // append the string to the stream
 
 		Lexer l = Lexer(strIn);
-
+		Parser p;
 		while(l.f != l.l) {
 	 		Token * t = l.next();
-			t->print();
+	 		//t->print();
+	 		tokens.push_back(t);
+			// push to deque instead of print //t->print();
 		}
+
+		p = Parser(tokens);
+
+		while (!p.eof()) 
+			p.expression();
+
+
 
 		std::cout << "\n";
 

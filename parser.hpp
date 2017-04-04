@@ -263,8 +263,9 @@ Token* Parser::match_if(Tok_kind k) { //
 	Token* t = lookahead();
 	if (t->kind == k)
 		return consume();
-	else 
+	else {
 		return nullptr;
+	}
 }
 
 #endif 

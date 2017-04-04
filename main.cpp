@@ -34,9 +34,12 @@ int main() {
 		}
 
 		p = Parser(tokens);
+		 while (!p.eof()) {
+		 	Expr* e = p.expression();
+		 	std::cout << e->Evaluate();
+		 }
 
-		while (!p.eof()) 
-			p.expression();
+		tokens.clear();
 
 
 

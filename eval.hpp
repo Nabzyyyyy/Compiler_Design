@@ -19,6 +19,7 @@ public:
 
 	virtual ~Expr() = default; // virtual destructor
 	virtual int Eval() = 0; // created virtual so that it will be overriden by every inherited class
+	std::string Evaluate();
 	const Type* check() { // returns the type
 		return ExprType;
 	}
@@ -212,7 +213,7 @@ private:
 public:
 	Less_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)		// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -228,7 +229,7 @@ private:
 public:
 	Greater_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)	// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -244,7 +245,7 @@ private:
 public:
 	LessOrEq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)	// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -260,7 +261,7 @@ private:
 public:
 	GreaterOrEq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Bool_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)	// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -276,7 +277,7 @@ private:
 public:
 	Add_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Int_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)		// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -301,7 +302,7 @@ private:
 public:
 	Sub_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Int_;
-		if (e1->check() != &Int_ & e2->check() != &Int_) 	// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_) 	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -326,7 +327,7 @@ private:
 public:
 	Mult_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Int_;
-		if (e1->check() != &Int_ & e2->check() != &Int_) 		// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_) 		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 
@@ -375,7 +376,7 @@ private:
 public:
 	Div_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Int_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)	// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -404,7 +405,7 @@ private:
 public:
 	Mod_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
 		ExprType = &Int_;
-		if (e1->check() != &Int_ & e2->check() != &Int_)		// if types are not valid, throw an exception
+		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -440,6 +441,14 @@ public:
 			return (0 - e1->Eval());
 	}
 };
+
+std::string Expr::Evaluate() {
+	if (check() == &Bool_) {
+		return Eval() ? "true" : "false";
+	}
+	else 
+		return std::to_string(Eval());
+}
 
 
 #endif

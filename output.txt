@@ -1,47 +1,40 @@
-Int_Token : 5
+8
+15
+17
+25
+false
+true
+false
+true
+true
+true
+false
+true
 
-Int_Token : 3214
+true
+false
+false
+true
 
-Int_Token : 123
+true
+false
+true
 
-Plus_token
+false
+true
+false
+true
+true
 
-Minus_token
+5
 
-Star_token
+0
+1
 
-Slash_token
+false
+true
 
-AmpAmp_token
+-5
+-20
 
-PipePipe_token
-
-Bang_token
-
-Eq_token
-
-EqEq_token
-
-BangEq_token
-
-Lt_token
-
-Gt_token
-
-LtEq_token
-
-GtEq_token
-
-Query_token
-
-Colon_token
-
-Lparen_token
-
-Rparen_token
-
-Bool_token : true
-
-Bool_token : false
-
-
+true

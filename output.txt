@@ -1,40 +1,12 @@
-8
-15
-17
-25
-false
-true
-false
-true
-true
-true
-false
-true
+Output: -413
 
-true
-false
-false
-true
 
-true
-false
-true
+Output: x = 121
 
-false
-true
-false
-true
-true
 
-5
+Output: y = 120
 
-0
-1
 
-false
-true
+Output: b = 0
 
--5
--20
 
-true

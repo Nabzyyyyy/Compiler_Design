@@ -40,9 +40,9 @@ int main() {
 
 		 while (!p.eof()) {
 		 	//Expr* e = p.expression();
-		 	//std::cout << "before print \n";
+		 	
 		 	p.print();
-		 	//std::cout << "after print \n";
+		 	
 		 	//std::cout << e->Evaluate();
 		 }
 

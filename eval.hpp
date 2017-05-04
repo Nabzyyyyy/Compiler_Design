@@ -9,8 +9,8 @@
 #include <cstring>
 #include "context.hpp"
 
-const Bool_Type Bool_; // Defining constant global objects to compare for correct types
-const Int_Type Int_;
+//const Bool_Type Bool_; // Defining constant global objects to compare for correct types
+//const Int_Type Int_;
 
 //struct Context;
 
@@ -25,7 +25,7 @@ public:
 	virtual int Eval() = 0; // created virtual so that it will be overriden by every inherited class
 	std::string Evaluate();
 	const Type* check() { // returns the type
-		// if (ExprType == &Int_)
+		// if (ExprType == &(cxt->Int_))
 		// 	std::cout << "check() is int type  \n";
 		return ExprType;
 	}
@@ -50,7 +50,7 @@ private:
 public:
 	Bool_expr(bool b, Context* _cxt) : val(b) {		// if types are not valid, throw an exception
 		cxt = _cxt;
-		ExprType = &Bool_;
+		ExprType = &(cxt->Bool_);
 	}
 
 	int Eval() { return val; } // returns true or false as a integer of 1 or 0 respectively
@@ -63,7 +63,7 @@ private:
 public:
 	Int_expr(int v, Context* _cxt) : val(v) {
 		cxt = _cxt;
-		ExprType = &Int_;
+		ExprType = &(cxt->Int_);
 	}
 
 	int Eval() { return val; }
@@ -75,9 +75,10 @@ private:
 	Expr* e2;
 
 public:
-	And_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ & e2->check() != &Bool_)		// if types are not valid, throw an exception
+	And_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Bool_) & e2->check() != &(cxt->Bool_))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() { return e1->Eval() ? e2->Eval() : false; }	// if e1 is true, return e2, else return false;
@@ -89,9 +90,10 @@ private:
 	Expr* e2;
 
 public:
-	Or_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ & e2->check() != &Bool_) 	// if types are not valid, throw an exception
+	Or_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Bool_) & e2->check() != &(cxt->Bool_)) 	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -106,8 +108,8 @@ public:
 
 // public:
 // 	And_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-// 		ExprType = &Bool_;
-// 		if (e1->check() != &Bool_ | e2->check() != &Bool_)	// if types are not valid, throw an exception
+// 		ExprType = &(cxt->Bool_);
+// 		if (e1->check() != &(cxt->Bool_) | e2->check() != &(cxt->Bool_))	// if types are not valid, throw an exception
 // 			throw std::runtime_error(err);
 // 	}
 
@@ -121,8 +123,8 @@ public:
 
 // public:
 // 	Or_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {		// if types are not valid, throw an exception
-// 		ExprType = &Bool_;
-// 		if (e1->check() != &Bool_ | e2->check() != &Bool_)
+// 		ExprType = &(cxt->Bool_);
+// 		if (e1->check() != &(cxt->Bool_) | e2->check() != &(cxt->Bool_))
 // 			throw std::runtime_error(err);
 // 	}
 
@@ -136,9 +138,10 @@ private:
 	Expr* e2;
 
 public:
-	Xor_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {		// if types are not valid, throw an exception
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ | e2->check() != &Bool_)
+	Xor_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {		// if types are not valid, throw an exception
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Bool_) | e2->check() != &(cxt->Bool_))
 			throw std::runtime_error(err);
 	}
 
@@ -150,9 +153,10 @@ private:
 	Expr* e1;
 
 public:
-	Not_expr(Expr* e1) : e1(e1) {		// if types are not valid, throw an exception
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_)
+	Not_expr(Expr* e1, Context* _cxt) : e1(e1) {		// if types are not valid, throw an exception
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Bool_))
 			throw std::runtime_error(err);
 	}
 	int Eval() { return !e1->Eval(); }
@@ -165,9 +169,10 @@ private:
 	Expr* e3;
 
 public:
-	If_expr(Expr* e1, Expr* e2, Expr* e3) : e1(e1), e2(e2), e3(e3) {		// if types are not valid, throw an exception
-		ExprType = &Bool_;
-		if (e1->check() != &Bool_ & e2->check() != &Bool_ & e3->check() != &Bool_)
+	If_expr(Expr* e1, Expr* e2, Expr* e3, Context* _cxt) : e1(e1), e2(e2), e3(e3) {		// if types are not valid, throw an exception
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Bool_) & e2->check() != &(cxt->Bool_) & e3->check() != &(cxt->Bool_))
 			throw std::runtime_error(err);
 	}
 
@@ -185,9 +190,10 @@ private:
 	Expr* e2;
 
 public:
-	Eq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if ((e1->check() == &Bool_ & e2->check() == &Int_) | (e1->check() == &Int_ & e2->check() == &Bool_)) {		// if types are not valid, throw an exception
+	Eq_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if ((e1->check() == &(cxt->Bool_) & e2->check() == &(cxt->Int_)) | (e1->check() == &(cxt->Int_) & e2->check() == &(cxt->Bool_))) {		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 		}
 	}
@@ -204,9 +210,10 @@ private:
 	Expr* e2;
 
 public:
-	NotEq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if ((e1->check() == &Bool_ & e2->check() == &Int_) | (e1->check() == &Int_ & e2->check() == &Bool_))		// if types are not valid, throw an exception
+	NotEq_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if ((e1->check() == &(cxt->Bool_) & e2->check() == &(cxt->Int_)) | (e1->check() == &(cxt->Int_) & e2->check() == &(cxt->Bool_)))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 
@@ -221,9 +228,10 @@ private:
 	Expr* e2;
 
 public:
-	Less_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
+	Less_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -237,9 +245,10 @@ private:
 	Expr* e2;
 
 public:
-	Greater_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
+	Greater_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -253,9 +262,10 @@ private:
 	Expr* e2;
 
 public:
-	LessOrEq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
+	LessOrEq_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -269,9 +279,10 @@ private:
 	Expr* e2;
 
 public:
-	GreaterOrEq_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Bool_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
+	GreaterOrEq_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Bool_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -285,9 +296,10 @@ private:
 	Expr* e2;
 
 public:
-	Add_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
+	Add_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -310,10 +322,11 @@ private:
 	Expr* e2;
 
 public:
-	Sub_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_ || e2->check() != &Int_) 	// if types are not valid, throw an exception
-			throw std::runtime_error(err);
+	Sub_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_)) 	// if types are not valid, throw an exception
+			 throw std::runtime_error(err);
 	}
 	int Eval() {
 		if (e1->Eval() > 0 & e2->Eval() < 0 & e1->Eval() > std::numeric_limits<int>::max() + e2->Eval()) {	// if result is out of the range supported, throw exception.
@@ -336,9 +349,10 @@ private:
 	Expr* e2;
 
 public:
-	Mult_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_ || e2->check() != &Int_) 		// if types are not valid, throw an exception
+	Mult_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_)) 		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 
@@ -385,9 +399,10 @@ private:
 	Expr* e2;
 
 public:
-	Div_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)	// if types are not valid, throw an exception
+	Div_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))	// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -414,9 +429,10 @@ private:
 	Expr* e2;
 
 public:
-	Mod_expr(Expr* e1, Expr* e2) : e1(e1), e2(e2) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_ || e2->check() != &Int_)		// if types are not valid, throw an exception
+	Mod_expr(Expr* e1, Expr* e2, Context* _cxt) : e1(e1), e2(e2) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_) || e2->check() != &(cxt->Int_))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -438,9 +454,10 @@ private:
 	Expr* e1;
 
 public:
-	Neg_expr(Expr* e1) : e1(e1) {
-		ExprType = &Int_;
-		if (e1->check() != &Int_)		// if types are not valid, throw an exception
+	Neg_expr(Expr* e1, Context* _cxt) : e1(e1) {
+		cxt = _cxt;
+		ExprType = &(cxt->Int_);
+		if (e1->check() != &(cxt->Int_))		// if types are not valid, throw an exception
 			throw std::runtime_error(err);
 	}
 	int Eval() {
@@ -454,7 +471,7 @@ public:
 };
 
 std::string Expr::Evaluate() {
-	if (check() == &Bool_) {
+	if (check() == &(cxt->Bool_)) {
 		return Eval() ? "true" : "false";
 	}
 	else 

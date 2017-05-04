@@ -69,9 +69,9 @@ bool Parser::eof() {
 }
 
 void Parser::print() {
-	//std::cout << "beginning of parser::print \n";
+	
 	Stmt* s = parse();
-
+	
 	if (expr_stmt* exp = dynamic_cast<expr_stmt*>(s)) {
 		std::cout << "Output: " << exp->ex->Eval() << "\n\n";
 
@@ -80,7 +80,7 @@ void Parser::print() {
 	}
 
 	else if (decl_stmt* dec = dynamic_cast<decl_stmt*>(s)) {
-		//std::cout << "Making decl_stmt \n";
+		
 		if (Var_Decl* vard = dynamic_cast<Var_Decl*>(dec->d)) {
 			std::cout << "Output: " << vard->name << " = " << vard->init->Eval() << "\n\n";
 
@@ -88,7 +88,7 @@ void Parser::print() {
 				  	  //<< "Output: " << vard->name << " = " << vard->init->Eval() << "\n\n";
 		}		
 	}
-	//std::cout << "end of parser::print \n";
+
 }
 
 
@@ -106,7 +106,7 @@ Expr* Parser::conditional_expression() {
 		}
 		else if (match_if(Colon_tok)) {
 			e3 = logicalOR_expression();
-			e1 = new If_expr(e1, e2, e3);
+			e1 = new If_expr(e1, e2, e3, cxt);
 		}
 		else 
 			break;
@@ -119,7 +119,7 @@ Expr* Parser::logicalOR_expression() {
 	while(true) {
 		if (match_if(PipePipe_tok)) {
 			Expr* e2 = logicalAND_expression();
-			e1 = new Or_expr(e1, e2);
+			e1 = new Or_expr(e1, e2, cxt);
 		}
 		else 
 			break;
@@ -132,7 +132,7 @@ Expr* Parser::logicalAND_expression() {
 	while(true) {
 		if (match_if(AmpAmp_tok)) {
 			Expr* e2 = equality_expression();
-			e1 = new And_expr(e1, e2);
+			e1 = new And_expr(e1, e2, cxt);
 		}
 		else 
 			break;
@@ -145,11 +145,11 @@ Expr* Parser::equality_expression() {
 	while(true) {
 		if (match_if(EqEq_tok)) {
 			Expr* e2 = relational_expression();
-			e1 = new Eq_expr(e1, e2);
+			e1 = new Eq_expr(e1, e2, cxt);
 		}
 		else if (match_if(BangEq_tok)) {
 			Expr* e2 = relational_expression();
-			e1 = new NotEq_expr(e1, e2);
+			e1 = new NotEq_expr(e1, e2, cxt);
 		}
 		else
 			break;
@@ -162,19 +162,19 @@ Expr* Parser::relational_expression() {
 	while(true) {
 		if (match_if(Lt_tok)) {
 			Expr* e2 = additive_expression();
-			e1 = new Less_expr(e1, e2);
+			e1 = new Less_expr(e1, e2, cxt);
 		}
 		else if (match_if(Gt_tok)) {
 			Expr* e2 = additive_expression();
-			e1 = new Greater_expr(e1, e2);
+			e1 = new Greater_expr(e1, e2, cxt);
 		}
 		else if (match_if(LtEq_tok)) {
 			Expr* e2 = additive_expression();
-			e1 = new LessOrEq_expr(e1, e2);
+			e1 = new LessOrEq_expr(e1, e2, cxt);
 		}
 		else if (match_if(GtEq_tok)) {
 			Expr* e2 = additive_expression();
-			e1 = new GreaterOrEq_expr(e1, e2);
+			e1 = new GreaterOrEq_expr(e1, e2, cxt);
 		}
 		else
 			break;
@@ -187,11 +187,14 @@ Expr* Parser::additive_expression() {
 	while(true) {
 		if (match_if(Plus_tok)) {
 			Expr* e2 = multiplicative_expression();
-			e1 = new Add_expr(e1, e2);
+			e1 = new Add_expr(e1, e2, cxt);
 		}
 		else if (match_if(Minus_tok)) {
+			
 			Expr* e2 = multiplicative_expression();
-			e1 = new Sub_expr(e1, e2);
+			
+			e1 = new Sub_expr(e1, e2, cxt);
+			
 		}
 		else
 			break;
@@ -204,15 +207,15 @@ Expr* Parser::multiplicative_expression() {
 	while(true) {
 		if (match_if(Star_tok)) {
 			Expr* e2 = unary_expression();
-			e1 = new Mult_expr(e1, e2);
+			e1 = new Mult_expr(e1, e2, cxt);
 		}
 		else if (match_if(Slash_tok)) {
 			Expr* e2 = unary_expression();
-			e1 = new Div_expr(e1, e2);
+			e1 = new Div_expr(e1, e2, cxt);
 		}
 		else if (match_if(Percent_tok)) {
 			Expr* e2 = unary_expression();
-			e1 = new Mod_expr(e1, e2);
+			e1 = new Mod_expr(e1, e2, cxt);
 		}
 		else
 			break;
@@ -224,11 +227,11 @@ Expr* Parser::unary_expression() { // !, -
 	Expr* e;
 	if (match_if(Minus_tok)) {
 		e = unary_expression();
-		e = new Neg_expr(e);
+		e = new Neg_expr(e, cxt);
 	}
 	else if (match_if(Bang_tok)) {
 		e = unary_expression();
-		e = new Not_expr(e);
+		e = new Not_expr(e, cxt);
 	}
 	else {
 		return primary_expression();
@@ -237,6 +240,7 @@ Expr* Parser::unary_expression() { // !, -
 }
 
 Expr* Parser::primary_expression() {
+	
 	Token* t = lookahead();
 	switch(t->kind) {
 		// case Bool_tok:{
@@ -253,6 +257,7 @@ Expr* Parser::primary_expression() {
 			return new Bool_expr(false, cxt); break;
 		}
 		case Int_tok: {
+			
 			Int_token* it = dynamic_cast<Int_token*>(t);
 			consume();
 			return new Int_expr(it->val, cxt); break;
@@ -263,6 +268,14 @@ Expr* Parser::primary_expression() {
 			match(Rparen_tok);
 			return e;
 			break;
+		}
+		case Id_tok: {
+			Id_token* it = dynamic_cast<Id_token*>(t);
+			consume();
+			if (Var_Decl* vard = dynamic_cast<Var_Decl*>(cxt->find_sym(dynamic_cast<Id_token*>(t)->name)))
+				return vard->init;
+
+			throw std::runtime_error("error");
 		}
 		default: {
 			throw std::runtime_error("parser.hpp: declaration error");
@@ -335,10 +348,10 @@ Token* Parser::require(Tok_kind k) {
 }
 
 Stmt* Parser::statement() {
-	//std::cout << "inside parser::statement \n";
-	switch(lookahead()->kind){
+	
+	switch(lookahead()->kind) {
 		case Var_kw: return decl_statement(); 
-		case Id_tok:
+		case Id_tok: 
 			if(lookahead(1) && match_if(lookahead(1), Eq_tok))
 				return decl_statement();
 		default: 
@@ -352,8 +365,11 @@ Stmt* Parser::decl_statement() {
 }
 
 Stmt* Parser::expr_statement() {
+		
 		Expr* e = expression();
+		
 		match(Semi_tok); 
+		
 		return new expr_stmt(e);
 
 }
@@ -372,25 +388,23 @@ Decl* Parser::var_declaration() {
 
 	const Type* t = parse_type(); // to get the type of the var
 	const std::string n = parse_id(); // to get the identifier for the variable
-
+	
 	if(cxt->find_sym(n)) // this checks for an existing variable
 		throw std::runtime_error("Cannot declare two variables with the same name");
 
 	Var_Decl* var = new Var_Decl(cxt, n, t);
 	require(Eq_tok);
-
+	
 	Expr* e = expression();
 
-
 	if(e->check() != t) { // make sure the expression and variable are of the same type.
-		//std::cout << "After check \n";
 		std::string ss = "parser.hpp: Cannot assign that expression to a variable of this type";
 		throw std::runtime_error(ss);
 	}
-	//std::cout << "4  \n";
+	
 	var->init_f = e;
 	var->init = e->precompute();  // store expression
-	//std::cout << " 5 \n";
+	
 	match(Semi_tok); // allow matching of a semicolon
 	cxt->insert_sym(var); // add the variable to the symbol table
 
@@ -448,12 +462,12 @@ const Type* Parser::parse_type() {
 	switch(lookahead()->kind) {
 		case Bool_kw: {
 			consume();
-			//std::cout << "parse_type returned bool type  \n";
+			
 			return &(cxt->Bool_);
 		}
 		case Int_kw: {
 			consume();
-			//std::cout << "parse_type returned int type  \n";
+			
 			return &(cxt->Int_);
 		}
 	}

@@ -116,7 +116,7 @@ struct Id_token : Token {
 	}
 
 	void print() {
-		std::cout << "Id_Token : " << std::endl;
+		std::cout << "Id_Token : " << name << std::endl;
 	}
 };
 

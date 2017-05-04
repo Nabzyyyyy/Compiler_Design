@@ -1,38 +1,51 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
+#include <cstdlib>
 #include <string>
 #include <cstring>
 #include "token.hpp"
 #include <sstream>
 #include <stdexcept>
+#include "context.hpp"
+
+//bool debug = true;
 
 //#include <type>
 
 struct Lexer {
-	std::string::iterator f;
+	std::string::iterator f; // iterators for string
 	std::string::iterator l;
 
-	std::string str;
+	std::string str; // used for input
+
+	Context *cxt;
+
+	Token* Lex_Id();
 
 	Lexer(std::string _str) : str(_str) {
 		f = str.begin();
 		l = str.end();
 	}
 
-	std::string buf = "";
+	std::string buf = ""; // buffer for numbers
 	Token* next();
 	bool eof() const { 
 		return (f == l); 
 	}
 	char lookahead() const {
-		if (!eof())
-			return *f;
+		//if (!eof())
+		return *f;
 	}
 
-	void consume() {
+	char lookahead(int step) const {
+		return *(f + step);
+	}
+
+	void consume() { // consumes to next char
 		f++;
 	}
-	void buffer() {
+
+	void buffer() { 
 		// if (eof())
 		// 	return;
 
@@ -134,31 +147,99 @@ Token * Lexer::next() {
 						buffer();
 					return new Int_token(std::stoi(buf));
 				}
-				case 't': {
-					buffer();
-					if (lookahead() == 'r')
-						buffer();
-					if (lookahead() == 'u')
-						buffer();
-					if (lookahead() == 'e')
-						buffer();
-					return new Bool_token(true);
-				}
-				case 'f': {
-					buffer(); 
-					if (lookahead() == 'a')
-						buffer();
-					if (lookahead() == 'l')
-						buffer();
-					if (lookahead() == 's')
-						buffer();
-					if (lookahead() == 'e')
-						buffer();
-					return new Bool_token(false);
-				}
-				default: std::cout << "Received unsupported character" << std::endl; throw std::runtime_error(""); break;
+				// case 't': {
+				// 	buffer();
+				// 	if (lookahead() == 'r')
+				// 		buffer();
+				// 	if (lookahead() == 'u')
+				// 		buffer();
+				// 	if (lookahead() == 'e')
+				// 		buffer();
+				// 	return new Bool_token(true);
+				// }
+				// case 'f': {
+				// 	buffer(); 
+				// 	if (lookahead() == 'a')
+				// 		buffer();
+				// 	if (lookahead() == 'l')
+				// 		buffer();
+				// 	if (lookahead() == 's')
+				// 		buffer();
+				// 	if (lookahead() == 'e')
+				// 		buffer();
+				// 	return new Bool_token(false);
+				//}
+				// case 'a' ... 'z':
+				// case 'A' ... 'Z': return Lex_Id();
+				case '_':
+				case 'a':
+				case 'b':
+				case 'c':
+				case 'd':
+				case 'e':
+				case 'f':
+				case 'g':
+				case 'h':
+				case 'i':
+				case 'j':
+				case 'k':
+				case 'l':
+				case 'm':
+				case 'n':
+				case 'o':
+				case 'p':
+				case 'q':
+				case 'r':
+				case 's':
+				case 't':
+				case 'u':
+				case 'v':
+				case 'w':
+				case 'x':
+				case 'y':
+				case 'z':
+				case 'A':
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'E':
+				case 'F':
+				case 'G':
+				case 'H':
+				case 'I':
+				case 'J':
+				case 'K':
+				case 'L':
+				case 'M':
+				case 'N':
+				case 'O':
+				case 'P':
+				case 'Q':
+				case 'R':
+				case 'S':
+				case 'T':
+				case 'U':
+				case 'V':
+				case 'W':
+				case 'X':
+				case 'Y':
+				case 'Z': return Lex_Id();
+				default: throw std::runtime_error("Received unsupported character"); break;
 			} // end switch
 		} //end while // return nullpt	r;
+		throw std::runtime_error("Lexer: Next: Maybe this will fix it");
+}
+
+Token* Lexer::Lex_Id() {
+	buffer();
+	while (isdigit(lookahead()) || isalpha(lookahead()) || lookahead() == '_')
+		buffer();
+
+	const std::string str = buf;
+	if(Token *kw = cxt->check_kw(str)) // checks to see if buffer has a keyword to parse as an Id_token
+		return kw;
+	else 
+		return new Id_token(str);
 }
 
 #endif

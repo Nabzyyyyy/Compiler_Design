@@ -2,6 +2,7 @@
 #define TOKEN_HPP
 
 #include <iostream>
+#include <unordered_map>
 
 enum Tok_kind {
 	Eof_tok,
@@ -26,11 +27,18 @@ enum Tok_kind {
 	Colon_tok,
 	Lparen_tok,
 	Rparen_tok,
-	Semi_tok
+	Semi_tok,
+	Id_tok,
+	True_kw,
+	False_kw,
+	Var_kw,
+	Int_kw,
+	Bool_kw
 };
 
 struct Token {
 	Tok_kind kind;
+	std::string symbol;
 	virtual void print() = 0;
 };
 
@@ -95,6 +103,34 @@ struct Int_token : Token {
 	}
 };
 
+struct Id_token : Token { 
+	const std::string name; 
+	Id_token(const std::string n) : name(n) {
+		kind = Id_tok;
+		symbol = name;
+	}
+
+	Id_token(const std::string n, Tok_kind k) : name(n) {
+		kind = k;
+		symbol = name;
+	}
+
+	void print() {
+		std::cout << "Id_Token : " << std::endl;
+	}
+};
+
+struct Keyword_Table : std::unordered_map<std::string, Tok_kind> {
+	Keyword_Table() {
+		insert({
+			{"true", True_kw},
+			{"false", False_kw},
+			{"var", Var_kw},
+			{"int", Int_kw},
+			{"bool", Bool_kw}	
+		});
+	}
+};
 
 
 #endif

@@ -1,4 +1,4 @@
-//#include "stdafx.hpp"
+//#include "stdafx.hpp" // g++ -std=c++11 main.cpp
 #include "eval.hpp"
 #include "lexer.hpp"
 #include <exception>
@@ -21,11 +21,13 @@ int main() {
 	std::deque<Token*> tokens;
 	//std::stringstream strStream;
 
+	Context* cxt = new Context();
+
 	while(std::getline(std::cin, strIn)) { 	// while there's standard input
 		//strStream << strIn; // append the string to the stream
 
 		Lexer l = Lexer(strIn);
-		Parser p;
+		Parser p;// = new Parser(tokens, cxt);
 		while(l.f != l.l) {
 	 		Token * t = l.next();
 	 		//t->print();
@@ -33,15 +35,18 @@ int main() {
 			// push to deque instead of print //t->print();
 		}
 
-		p = Parser(tokens);
+		p = Parser(tokens, cxt);
+
+
 		 while (!p.eof()) {
-		 	Expr* e = p.expression();
-		 	std::cout << e->Evaluate();
+		 	//Expr* e = p.expression();
+		 	//std::cout << "before print \n";
+		 	p.print();
+		 	//std::cout << "after print \n";
+		 	//std::cout << e->Evaluate();
 		 }
 
 		tokens.clear();
-
-
 
 		std::cout << "\n";
 

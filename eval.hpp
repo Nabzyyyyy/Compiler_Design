@@ -7,22 +7,30 @@
 #include <stdexcept>
 #include <string> 
 #include <cstring>
+#include "context.hpp"
 
 const Bool_Type Bool_; // Defining constant global objects to compare for correct types
 const Int_Type Int_;
+
+//struct Context;
 
 struct Expr {
 	//	struct Visitor;
 public:
 	const Type* ExprType;
+	Context* cxt;
 	std::string err = "Threw exception of type invalid_type."; // defines and initializes (to most common case) a string the be passed into runetime_error when it is thrown
 
 	virtual ~Expr() = default; // virtual destructor
 	virtual int Eval() = 0; // created virtual so that it will be overriden by every inherited class
 	std::string Evaluate();
 	const Type* check() { // returns the type
+		// if (ExprType == &Int_)
+		// 	std::cout << "check() is int type  \n";
 		return ExprType;
 	}
+
+	Expr* precompute();
 
 private:
 	// virtual void accept(Visitor&) = 0;
@@ -40,7 +48,8 @@ private:
 	bool val;
 
 public:
-	Bool_expr(bool b) : val(b) {		// if types are not valid, throw an exception
+	Bool_expr(bool b, Context* _cxt) : val(b) {		// if types are not valid, throw an exception
+		cxt = _cxt;
 		ExprType = &Bool_;
 	}
 
@@ -52,7 +61,8 @@ private:
 	int val;
 
 public:
-	Int_expr(int v) : val(v) {
+	Int_expr(int v, Context* _cxt) : val(v) {
+		cxt = _cxt;
 		ExprType = &Int_;
 	}
 
@@ -317,6 +327,7 @@ public:
 		else
 			return (e1->Eval() - e2->Eval());
 	}
+
 };
 
 struct Mult_expr : Expr { // returns e1 * e2
@@ -448,6 +459,25 @@ std::string Expr::Evaluate() {
 	}
 	else 
 		return std::to_string(Eval());
+	// if (check() == &(cxt->Bool_))
+	// 	return Eval() ? "true" : "false";
+	// else if (check() == &(cxt->Int_))
+	// 	return std::to_string(Eval());
+	// else
+	// 	throw std::runtime_error("Evaluate error");
+}
+
+Expr* Expr::precompute() {
+	Expr* e;
+
+	if(check() == &(cxt->Bool_))
+		e = new Bool_expr(Eval(), cxt);
+	else if(check() == &cxt->Int_)
+		e = new Int_expr(Eval(), cxt);
+	else
+		throw std::runtime_error("eval.hpp: precompute error");
+
+	return e;
 }
 
 
